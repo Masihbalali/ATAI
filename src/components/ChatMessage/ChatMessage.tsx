@@ -2,7 +2,6 @@ import { Avatar } from '@nextui-org/react'
 import clsx from 'clsx'
 import React from 'react'
 import { useAnimatedText } from '../AnimatedText'
-import { log } from 'node:util'
 
 export type ChatMessageProps = Omit<React.HTMLProps<HTMLDivElement>, 'role'> & {
   message: string

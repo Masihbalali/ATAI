@@ -101,9 +101,10 @@ export const SearchResult: React.FC<SearchResultProps> = ({
   };
 
   const filteredFilesGroup = useMemo(
-    () => filesGroup.filter((item) => !filterType || filterType === item.type),
+    () => filesGroup.filter((item) => !filterType || filterType === item.type ||  `.${filterType}`  === item.extension),
     [filesGroup, filterType]
   );
+  console.log(filesGroup)
 
   return (
     <div className={clsx('relative', className)} {...props}>
