@@ -1,7 +1,7 @@
 import { FileData } from '@/types/data.types'
 import { Chip } from '@nextui-org/react'
 import clsx from 'clsx'
-import React, { useMemo } from 'react'
+import React, { useState, useMemo } from 'react'
 import {
   AudioFileIcon,
   DraftIcon,
@@ -31,13 +31,13 @@ export type ContextPanelProps = Omit<
 }
 
 export const ContextPanel: React.FC<ContextPanelProps> = ({
-  selected,
-  map,
-  compact = false,
-  setFilterType,
-  className,
-  ...props
-}) => {
+                                                            selected,
+                                                            map,
+                                                            compact = false,
+                                                            setFilterType,
+                                                            className,
+                                                            ...props
+                                                          }) => {
   const numberOfFiles = Object.values(map).filter(
     (f) => f.type !== 'folder',
   ).length
@@ -59,21 +59,13 @@ export const ContextPanel: React.FC<ContextPanelProps> = ({
     return Object.entries(groups) as [FileData['type'], FileData[]][]
   }, [selected, map])
 
-  const handleFilter = (IconComponent: any) => {
-    console.log(IconComponent)
-    setFilterType(IconComponent)
-    // if (IconComponent==="Pdf"){
-    //   setFilterType('pdf')
-    // }else if (IconComponent==="document"){
-    //   setFilterType("txt")
-    // }else if(IconComponent==="image"){
-    //   setFilterType("jpg")
-    // }else if(IconComponent==="video"){
-    //   setFilterType("mp4")
-    // }else if(IconComponent==="audio"){
-    //   setFilterType("mp3")
-    // }
+  const [activeChip, setActiveChip] = useState<string | null>(null)
+
+  const handleFilter = (key: string) => {
+    setFilterType(key)
+    setActiveChip(key)
   }
+
   return (
     <div
       className={clsx(className, 'flex flex-row items-end justify-between')}
@@ -95,22 +87,24 @@ export const ContextPanel: React.FC<ContextPanelProps> = ({
               onClick={() => handleFilter(key)}
               key={key + items.length}
               variant="flat"
-              color="primary"
               className={clsx(
-                'py-[20px] px-[16px] bg-[#ECECEC] cursor-pointer',
+                'py-[20px] px-[16px] cursor-pointer',
+                activeChip === key ? 'bg-[#4784ff]' : 'bg-[#ECECEC]',
+
                 'duration-100',
                 compact &&
-                  items.length === 0 && [
-                    'opacity-0',
-                    'overflow-hidden',
-                    'absolute',
-                  ],
+                items.length === 0 && [
+                  'opacity-0',
+                  'overflow-hidden',
+                  'absolute',
+                ],
               )}
               title={`Selected ${items.length} ${key} file(s)`}
             >
               <span className="flex flex-row items-center gap-[6px]">
                 <IconComponent className="fill-primary" />
-                <span className="flex items-center justify-center text-[20px] bg-primary text-white rounded-full w-[24px] h-[24px]">
+                <span
+                  className="flex items-center justify-center text-[20px] bg-primary text-white rounded-full w-[24px] h-[24px]">
                   {items.length}
                 </span>
               </span>

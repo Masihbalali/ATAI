@@ -1,10 +1,10 @@
-import { FileData } from '@/types/data.types'
-import { Accordion, AccordionItem, Checkbox, Divider } from '@nextui-org/react'
-import clsx from 'clsx'
-import React, { useMemo } from 'react'
-import { ContextPanel } from '../ContextPanel/ContextPanel'
-import { FileCard } from '../FileCard'
-import { FolderCard } from '../FolderCard'
+import { FileData } from '@/types/data.types';
+import { Accordion, AccordionItem, Checkbox, Divider } from '@nextui-org/react';
+import clsx from 'clsx';
+import React, { useMemo } from 'react';
+import { ContextPanel } from '../ContextPanel/ContextPanel';
+import { FileCard } from '../FileCard';
+import { FolderCard } from '../FolderCard';
 import {
   AudioFileIcon,
   DraftIcon,
@@ -12,7 +12,7 @@ import {
   ImageIcon,
   PdfFileIcon,
   VideoFileIcon,
-} from '../icons'
+} from '../icons';
 
 const iconMap = {
   folder: FolderIcon,
@@ -21,89 +21,89 @@ const iconMap = {
   video: VideoFileIcon,
   audio: AudioFileIcon,
   image: ImageIcon,
-}
+};
 
 export type SearchResultProps = Omit<
   React.HTMLProps<HTMLDivElement>,
   'selected' | 'onSelect' | 'title'
 > & {
-  title?: React.ReactNode
-  description?: React.ReactNode
-  files?: FileData[]
-  selected?: string[]
-  onSelect?: (selected: string[]) => void
-  hideList?: boolean
-  compactOverview?: boolean
-  filterType?: string
-  setFilterType?: any
-}
+  title?: React.ReactNode;
+  description?: React.ReactNode;
+  files?: FileData[];
+  selected?: string[];
+  onSelect?: (selected: string[]) => void;
+  hideList?: boolean;
+  compactOverview?: boolean;
+  filterType?: string;
+  setFilterType?: any;
+};
 
 export const SearchResult: React.FC<SearchResultProps> = ({
-  title,
-  description,
-  selected = [] as string[],
-  onSelect,
-  files = [],
-  className,
-  hideList = false,
-  compactOverview = false,
-  filterType,
-  setFilterType,
-  ...props
-}) => {
+                                                            title,
+                                                            description,
+                                                            selected = [] as string[],
+                                                            onSelect,
+                                                            files = [],
+                                                            className,
+                                                            hideList = false,
+                                                            compactOverview = false,
+                                                            filterType = '',
+                                                            setFilterType,
+                                                            ...props
+                                                          }) => {
   const map: Record<string, FileData> = useMemo(
     () => Object.fromEntries(files.map((file) => [file.id, file])),
-    [files, selected],
-  )
+    [files, selected]
+  );
 
   const [directoriesGroup, filesGroup] = useMemo(
     () => [
       files.filter((f) => f.type === 'folder'),
       files.filter((f) => f.type !== 'folder'),
     ],
-    [files, map],
-  )
+    [files, map]
+  );
 
   const onSelectionChange = (newValue: string[]) => {
-    if (onSelect) onSelect(newValue)
-  }
+    if (onSelect) onSelect(newValue);
+  };
 
   const isItemSelected = (id: string) => {
-    const { type, children = [] } = map[id]
-    const ids = type === 'folder' ? children.map((child) => child.id) : [id]
+    const { type, children = [] } = map[id];
+    const ids = type === 'folder' ? children.map((child) => child.id) : [id];
 
-    return ids.every((id) => selected.includes(id))
-  }
+    return ids.every((id) => selected.includes(id));
+  };
 
   const onCheckboxChange = (id: string) => {
-    const item = map[id]
-    const isSelected = isItemSelected(id)
+    const item = map[id];
+    const isSelected = isItemSelected(id);
 
     if (item.type === 'folder') {
-      const children = item.children || []
+      const children = item.children || [];
 
       const newSelected = isSelected
         ? selected.filter(
-            (item) => !children.map((child) => child.id).includes(item),
-          )
+          (item) => !children.map((child) => child.id).includes(item)
+        )
         : Array.from(
-            new Set([...selected, ...children.map((child) => child.id)]),
-          )
+          new Set([...selected, ...children.map((child) => child.id)])
+        );
 
-      onSelectionChange(newSelected)
+      onSelectionChange(newSelected);
     } else {
       const newSelected = selected.includes(id)
         ? selected.filter((item) => item !== id)
-        : [...selected, id]
+        : [...selected, id];
 
-      onSelectionChange(newSelected)
+      onSelectionChange(newSelected);
     }
-  }
+  };
 
   const filteredFilesGroup = useMemo(
-    () => filesGroup.filter((item) => filterType === item.type),
-    [filesGroup, filterType],
-  )
+    () => filesGroup.filter((item) => !filterType || filterType === item.type),
+    [filesGroup, filterType]
+  );
 
   return (
     <div className={clsx('relative', className)} {...props}>
@@ -120,7 +120,7 @@ export const SearchResult: React.FC<SearchResultProps> = ({
               'duration-300',
               'absolute right-0 w-full transition',
               !compactOverview && 'translate-y-0',
-              compactOverview && 'translate-y-[-50px]',
+              compactOverview && 'translate-y-[-50px]'
             )}
           />
         </div>
@@ -143,10 +143,7 @@ export const SearchResult: React.FC<SearchResultProps> = ({
                   <div className={clsx('flex flex-row items-center')}>
                     <FolderCard
                       name={item.name}
-                      label={[
-                        'Folder',
-                        `${(item.children || []).length} items`,
-                      ]}
+                      label={['Folder', `${(item.children || []).length} items`]}
                       selectedKeys={[]}
                       itemProps={{
                         onPress: () => onCheckboxChange(item.id),
@@ -169,7 +166,7 @@ export const SearchResult: React.FC<SearchResultProps> = ({
               <Divider className="my-2" />
 
               {filteredFilesGroup.map((item, index) => {
-                const IconComponent = iconMap[item.type]
+                const IconComponent = iconMap[item.type];
 
                 return (
                   <div key={index}>
@@ -195,12 +192,12 @@ export const SearchResult: React.FC<SearchResultProps> = ({
                       />
                     </div>
                   </div>
-                )
+                );
               })}
             </div>
           </AccordionItem>
         </Accordion>
       </div>
     </div>
-  )
-}
+  );
+};
