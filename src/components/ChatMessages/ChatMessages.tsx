@@ -7,12 +7,14 @@ export type ChatMessagesProps = Omit<
   'data'
 > & {
   data?: Pick<ChatMessageProps, 'message' | 'role' | 'disableAnimation'>[]
+  setEditMessage: (editMessage: string) => void
 }
 
 export const ChatMessages: React.FC<ChatMessagesProps> = ({
-  data = [],
-  ...props
-}) => {
+                                                            data = [],
+                                                            setEditMessage,
+                                                            ...props
+                                                          }) => {
   const ref = useRef<HTMLDivElement>(null)
   const messagesRef = useRef(data)
 
@@ -42,6 +44,7 @@ export const ChatMessages: React.FC<ChatMessagesProps> = ({
     >
       {data.map((message, index) => (
         <ChatMessage
+          setEditMessage={setEditMessage}
           key={index}
           role={message.role}
           message={message.message}

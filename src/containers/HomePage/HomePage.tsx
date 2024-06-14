@@ -16,6 +16,7 @@ export const HomePage: React.FC<HomePageProps> = ({ className, ...props }) => {
   const [messages, setMessages] = useState<ApiChatMessage[]>([])
   const [generating, setGenerating] = useState(false)
   const [filterType, setFilterType] = useState('')
+  const [editMessage, setEditMessage] = useState('')
 
   const search = useSearch(
     { query },
@@ -66,6 +67,10 @@ export const HomePage: React.FC<HomePageProps> = ({ className, ...props }) => {
     onSearch()
   }, [])
 
+  useEffect(() => {
+    setPrompt(editMessage)
+  }, [editMessage])
+
   return (
     <ChatLayout
       messageBar={
@@ -97,6 +102,7 @@ export const HomePage: React.FC<HomePageProps> = ({ className, ...props }) => {
           role: msg.role,
           message: msg.message,
         }))}
+        setEditMessage={setEditMessage}
       />
     </ChatLayout>
   )

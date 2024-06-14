@@ -2,27 +2,33 @@ import { Avatar } from '@nextui-org/react'
 import clsx from 'clsx'
 import React from 'react'
 import { useAnimatedText } from '../AnimatedText'
+import { log } from 'node:util'
 
 export type ChatMessageProps = Omit<React.HTMLProps<HTMLDivElement>, 'role'> & {
   message: string
   role: 'user' | 'assistant'
   disableAnimation?: boolean
+  setEditMessage: (editMessage: string) => void
 }
 
 export const ChatMessage: React.FC<ChatMessageProps> = ({
-  message,
-  role,
-  disableAnimation = false,
-  ...props
-}) => {
+                                                          message,
+                                                          role,
+                                                          disableAnimation = false,
+                                                          setEditMessage,
+                                                          ...props
+                                                        }) => {
   const content = useAnimatedText(message, {
     maxTime: 1000,
     disabled: role === 'user' || disableAnimation,
   })
 
+  const handleEdit = (text: string) => {
+    setEditMessage(text)
+  }
   return (
     <div {...props} className={clsx('', props.className)}>
-      <div className="flex flex-row gap-4 items-start">
+      <div className="flex flex-row gap-4 items-center">
         <Avatar
           className="flex-shrink-0"
           showFallback
@@ -38,7 +44,15 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
             dangerouslySetInnerHTML={{ __html: content }}
           />
         </div>
+        {
+          role !== 'assistant' &&
+          <button className={'bg-blue-500 h-full text-white p-2 rounded'} onClick={() => handleEdit(content)}>
+            Edit
+          </button>
+        }
+
       </div>
+
     </div>
   )
 }
